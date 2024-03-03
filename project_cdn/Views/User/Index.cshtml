@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+
+<html class="body-color">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>User Liting</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div>
+        <h1>User List Index</h1>
+        <div class="search-fields">
+            <input type="text" class="form-control input-width" name="username" id="username" placeholder="Search for username" value="" />
+            <input type="text" class="form-control input-width" name="email" id="email" placeholder="Search for email" value="" />
+            <input type="text" class="form-control input-width" name="phone" id="phone" placeholder="Search for phone" value="" />
+            <input type="text" class="form-control input-width" name="skillsets" id="skillsets" placeholder="Search for skillsets" value="" />
+            <input type="text" class="form-control input-width" name="hobby" id="hobby" placeholder="Search for hobby" value="" />
+            <div class="searchClass">
+                <i class="fa fa-search"></i>
+                <button id="searchBtn" class="btn btn-primary form-control"><i class="bi bi-search"></i>Search</button>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-hover table-checkable" id="user_tbl">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Skillsets</th>
+                    <th>Hobby</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+</body>
+</html>
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.1/js/dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.24/sweetalert2.all.js"></script>
+
+<script type="text/javascript">
+    const editUrl = '@Url.Action("Edit","User")';
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#addBtn').click(function() {
+
+        });
+
+        loadList = function() {
+            var username = ($('#username').val() ?? null);
+            var email = ($('#email').val() ?? null);
+            var phone = ($('#phone').val() ?? null);
+            var skillsets = ($('#skillsets').val() ?? null);
+            var hobby = ($('#hobby').val() ?? null);
+
+            var filter = [username, email, phone, skillsets, hobby];
+
+            $('#user_tbl').DataTable({
+                'searching': false,
+                responsive: true,
+                destroy: true,
+                "ajax": {
+                    "url": "/User/Listing",
+                    "traditional": true,
+                    "data": { 'filter': filter },
+                    "type": "GET",
+                    "datatype": "json",
+                    "dataSrc": "",
+                },
+                dom: 'l<"toolbar">frtip',
+                initComplete: function() {
+                    $(".dt-length")
+                        .append('<button id="addBtn" onClick="createUser()"><i class="fa fa-plus" style="margin-left: 2px"></i> Create User</button>');
+                },
+                "columns": [
+                    { "data": "id" },
+                    { "data": "username" },
+                    { "data": "email" },
+                    { "data": "phone" },
+                    { "data": "skillsets" },
+                    { "data": "hobby" },
+                    {
+                        data: function(row, type, set) {
+                            var r = `<a href="${editUrl}/${row.id}" class="edit-btn" title="Edit details"><i class="fa fa-edit"></i></a>`;
+
+                            r += `<a onclick="confirmationDeleteUser(${row.id})" class="dlt-btn" title="Delete"><i class="fa fa-trash"></i></a>`;
+
+                            return r;
+                        }
+                    }
+                ]
+            });
+        }
+
+        loadList();
+
+        $("#searchBtn").click(function() {
+            loadList();
+        });
+    });
+
+    function createUser() {
+        location = '/User/Create';
+    }
+
+    function confirmationDeleteUser(id) {
+        Swal.fire({
+            title: 'Are you sure want to delete this user?',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#47BE7D',
+            confirmButtonText: 'Delete'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteUser(id);
+            }
+        })
+    }
+
+    function deleteUser(id) {
+        $.ajax({
+            type: 'POST',
+            url: 'User/DeleteUser',
+            data: { id: id },
+            datatype: 'json',
+            success: function(response) {
+                Swal.fire({
+                    title: response.msg,
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#47BE7D',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload();
+                    }
+                })
+            },
+        });
+    }
+</script>
+
+<style>
+    .body-color {
+        background: #FFF !important;
+    }
+
+    #user_tbl {
+        margin: 20px 0px;
+    }
+
+    .dt-length {
+        margin-top: 50px;
+    }
+
+    .input-width {
+        width: 18.4%;
+        background: #F0F0F0;
+        border: 0px;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .searchClass {
+        width: 8%;
+        display: flex;
+        margin: auto;
+        padding: 5px 10px;
+        justify-content: center;
+        cursor: pointer;
+        background: #494A4C;
+        border: 1px solid blue;
+        border-radius: 10px;
+    }
+
+    #searchBtn {
+        border: transparent;
+        background: transparent;
+        color: #fff;
+    }
+
+    .fa.fa-search {
+        color: #fff;
+    }
+
+    .search-fields {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .dt-info, .dt-paging.paging_full_numbers {
+        display: flex;
+        justify-content: center;
+    }
+
+    table.dataTable > tbody > tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    thead {
+        background: #00416B;
+    }
+
+    .dt-column-title {
+        color: #fff;
+        font-weight: bold;
+    }
+
+    #addBtn {
+        position: absolute;
+        right: 0;
+        background: green;
+        color: #fff;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 10px;
+    }
+
+    .edit-btn {
+        cursor: pointer;
+        margin: 5px;
+        border: 1px solid black;
+        padding: 5px;
+        border-radius: 100px;
+    }
+
+    .dlt-btn {
+        cursor: pointer;
+        margin: 5px;
+        border: 1px solid black;
+        padding: 5px;
+        border-radius: 100px;
+    }
+
+</style>
+

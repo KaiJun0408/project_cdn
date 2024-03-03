@@ -1,0 +1,105 @@
+﻿@model BLO.Models.UserListRequest
+<!DOCTYPE html>
+
+<html class="body-color">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>User Liting</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div>
+        <div class="menu-item">
+            <i class="fa fa-arrow-left" onClick="backtohome()"></i>
+            <h1>User Edit Index</h1>
+        </div>
+        @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { id = "user_form", @class = "form" }))
+        {
+            <fieldset>
+                @Html.HiddenFor(model => model.id)
+                <div class="form-group mb-3">
+                    <label>UserName</label>
+                    @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8"  } })
+                </div>
+
+
+                <div class="form-group mb-3">
+                    <label>Email</label>
+                    @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8" } })
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Phone</label>
+                    @Html.EditorFor(model => model.phone, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8" } })
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>skillsets</label>
+                    @Html.EditorFor(model => model.skillsets, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8" } })
+                </div>
+                <div class="form-group mb-3">
+                    <label>hobby</label>
+                    @Html.EditorFor(model => model.hobby, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8" } })
+                </div>
+
+
+                <button id="kt_login_signin_submit" type="submit" class="btn btn-primary font-weight-bold px-2 py-2 my-3">Update profile</button>
+
+                <div>
+                    <a href="@Url.Action("Index", "User")">Back</a>
+                </div>
+            </fieldset>
+        }
+    </div>
+
+</body>
+</html>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.1/js/dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.24/sweetalert2.all.js"></script>
+
+<script>
+    $(function() {
+        $('#user_form').submit(function() {
+            $.ajax({
+                url: this.action,
+                type: this.method,
+                data: $(this).serialize(),
+                success: function(data) {
+                    Swal.fire({
+                        title: data.msg,
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonColor: '#47BE7D',
+                        confirmButtonText: 'Confirm'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location = '/User';
+                        }
+                    })
+                }
+            });
+            return false;
+        });
+    });
+
+    function backtohome() {
+        location = "/User";
+    }
+</script>
+
+<style>
+    .menu-item {
+        display: flex;
+        align-items: center;
+    }
+
+    .fa.fa-arrow-left {
+        cursor: pointer;
+        border: 1px solid black;
+        padding: 5px;
+        border-radius: 100px;
+    }
+</style>
