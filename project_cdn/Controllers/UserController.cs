@@ -83,10 +83,9 @@ namespace project_cdn.Controllers
             using (DBObject con = new DBObject())
             {
                 //ProfileRequest data = con.DB.QueryFirstOrDefault<ProfileRequest>("UPDATE user SET UserName  = '" + profileDetails.UserName + "',Email  = '" + profileDetails.Email + "',Phone  = '" + profileDetails.Phone + "',Password  = '" + profileDetails.Password + "' WHERE id = '" + profileDetails.Id + "';");
-                var data = con.DB.QueryFirstOrDefault<UserListRequest>("UPDATE user_table SET username  = @username, email  = @mail, phone  = @phone, skillsets  = @skillsets, hobby = @hobby WHERE id = @id",
+                var data = con.DB.QueryFirstOrDefault<UserListRequest>("UPDATE user_table SET email  = @mail, phone  = @phone, skillsets  = @skillsets, hobby = @hobby WHERE id = @id",
                 new
                 {
-                    username = model.username,
                     mail = model.email,
                     phone = model.phone,
                     skillsets = model.skillsets,
@@ -115,26 +114,41 @@ namespace project_cdn.Controllers
         {
             using (DBObject con = new DBObject())
             {
-                //RegisterRequest data = con.DB.QueryFirstOrDefault<RegisterRequest>("INSERT INTO user (FirstName, LastName, UserName, Phone, Email, Password, RecStatus, ActivationCode) Values ('" + registerDetails.FirstName + "' , '" + registerDetails.LastName + "' , '" + registerDetails.UserName + "', '" + registerDetails.Phone + "', '" + registerDetails.Email + "', '" + registerDetails.Password + "' , '" + registerDetails.RecStatus + "', '" + registerDetails.ActivationCode + "');");
-                var data = con.DB.QueryFirstOrDefault<UserListRequest>("INSERT INTO user_table (username, email, phone, skillsets, hobby, status) Values ( @username , @mail , @skillsets, @hobby, @mail, @status);",
-                    new
+                var checkDuplicate = con.DB.Query<UserListRequest>("Select id, username, email, phone, skillsets, hobby, status from user_table where status = 1 AND username = @user", new { user = model.username, }).FirstOrDefault();
+                if (checkDuplicate == null)
+                {
+                    //RegisterRequest data = con.DB.QueryFirstOrDefault<RegisterRequest>("INSERT INTO user (FirstName, LastName, UserName, Phone, Email, Password, RecStatus, ActivationCode) Values ('" + registerDetails.FirstName + "' , '" + registerDetails.LastName + "' , '" + registerDetails.UserName + "', '" + registerDetails.Phone + "', '" + registerDetails.Email + "', '" + registerDetails.Password + "' , '" + registerDetails.RecStatus + "', '" + registerDetails.ActivationCode + "');");
+                    var data = con.DB.QueryFirstOrDefault<UserListRequest>("INSERT INTO user_table (username, email, phone, skillsets, hobby, status) Values ( @username , @mail , @phone, @skillsets, @hobby, @status);",
+                        new
+                        {
+                            username = model.username,
+                            mail = model.email,
+                            phone = model.phone,
+                            skillsets = model.skillsets,
+                            hobby = model.hobby,
+                            status = 1,
+                        });
+                    ReturnResponse response = new ReturnResponse()
                     {
-                        username = model.username,
-                        mail = model.email,
-                        phone = model.phone,
-                        skillsets = model.skillsets,
-                        hobby = model.hobby,
-                        status = 1,
-                    });
+                        status = true,
+                        msg = "User Created!",
+                    };
+
+                    return Json(response);
+                }
+                else
+                {
+                    ReturnResponse response = new ReturnResponse()
+                    {
+                        status = false,
+                        msg = "User Existed!",
+                    };
+
+                    return Json(response);
+                }
+
+
             }
-
-            ReturnResponse response = new ReturnResponse()
-            {
-                status = true,
-                msg = "User Updated!",
-            };
-
-            return Json(response);
         }
 
         [HttpPost]
@@ -148,7 +162,7 @@ namespace project_cdn.Controllers
             ReturnResponse response = new ReturnResponse()
             {
                 status = true,
-                msg = "User Edited!"          
+                msg = "User Deleted!"
             };
 
             return Json(response);

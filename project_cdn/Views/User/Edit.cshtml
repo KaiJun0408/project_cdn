@@ -13,43 +13,56 @@
             <i class="fa fa-arrow-left" onClick="backtohome()"></i>
             <h1>User Edit Index</h1>
         </div>
-        @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { id = "user_form", @class = "form" }))
-        {
-            <fieldset>
-                @Html.HiddenFor(model => model.id)
-                <div class="form-group mb-3">
-                    <label>UserName</label>
-                    @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8"  } })
-                </div>
+        <div class="table-item">
+            @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { id = "user_form", @class = "form" }))
+            {
+                <fieldset>
+                    @Html.HiddenFor(model => model.id)
+                    <div class="form-group mb-3">
+                        <div class="field1"><a>UserName</a></div>
+                        @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8", placeholder = "Enter your Username", required = "required", @disabled = "disabled"  } })
+                    </div>
 
+                    <hr></hr>
 
-                <div class="form-group mb-3">
-                    <label>Email</label>
-                    @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8" } })
-                </div>
+                    <div class="form-group mb-3" style="padding-top: 15px">
+                        <div class="field1"><label>Email</label></div>
+                        @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8", placeholder = "Enter your Email", required = "required", @type = "email" } })
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label>Phone</label>
-                    @Html.EditorFor(model => model.phone, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8" } })
-                </div>
+                    <hr></hr>
 
-                <div class="form-group mb-3">
-                    <label>skillsets</label>
-                    @Html.EditorFor(model => model.skillsets, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8" } })
-                </div>
-                <div class="form-group mb-3">
-                    <label>hobby</label>
-                    @Html.EditorFor(model => model.hobby, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8" } })
-                </div>
+                    <div class="form-group mb-3" style="padding-top: 15px">
+                        <div class="field1"><label>Phone Number</label></div>
+                        @Html.EditorFor(model => model.phone, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8", placeholder = "Enter your Phone Number without '-' ", required = "required", pattern="01[02-46-9][0-9]{7}|011[0-9]{8}" } })
+                    </div>
 
+                    <hr></hr>
 
-                <button id="kt_login_signin_submit" type="submit" class="btn btn-primary font-weight-bold px-2 py-2 my-3">Update profile</button>
+                    <div class="form-group mb-3" style="padding-top: 15px">
+                        <div class="field1"><label>Skills Set</label></div>
+                        @Html.EditorFor(model => model.skillsets, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8", placeholder = "Enter your Skills Set", required = "required" } })
+                    </div>
 
-                <div>
-                    <a href="@Url.Action("Index", "User")">Back</a>
-                </div>
-            </fieldset>
-        }
+                    <hr></hr>
+
+                    <div class="form-group mb-3" style="padding-top: 15px">
+                        <div class="field1"><label>Hobby</label></div>
+                        @Html.EditorFor(model => model.hobby, new { htmlAttributes = new { @class = "form-control h-auto form-control-solid py-2 px-8", placeholder = "Enter your Hobby", required = "required" } })
+                    </div>
+
+                    <hr></hr>
+
+                    <div class="form-footer">
+                        <button id="kt_login_signin_submit" type="submit" class="btn-create btn btn-primary font-weight-bold px-2 py-2 my-3">Save</button>
+
+                        <div class="btn-back">
+                            <a href="@Url.Action("Index", "User")">Back</a>
+                        </div>
+                    </div>
+                </fieldset>
+            }
+        </div>
     </div>
 
 </body>
@@ -71,8 +84,9 @@
                     Swal.fire({
                         title: data.msg,
                         icon: 'success',
+                        iconColor: '#D6D9F8',
                         showCancelButton: true,
-                        confirmButtonColor: '#47BE7D',
+                        confirmButtonColor: '#D6D9F8',
                         confirmButtonText: 'Confirm'
                     }).then((result) => {
                         if (result.isConfirmed) {
@@ -91,15 +105,114 @@
 </script>
 
 <style>
+    body {
+        height: calc(100vh - 16px);
+        background-image: linear-gradient(#F1EFFC, #EAEAF6, #DBDDF6, #D6D9F8 );
+    }
+
+    fieldset {
+        border: 0px;
+        width: 780px;
+        margin: auto;
+        background: #F5F5FF;
+        padding: 30px;
+        padding: 30px;
+        border-radius: 10px
+    }
+
     .menu-item {
         display: flex;
+        justify-content: center;
         align-items: center;
     }
 
+        .menu-item h1 {
+            margin-block-start: unset;
+            margin-block-end: unset;
+            margin-inline-start: unset;
+            margin-inline-end: unset;
+            margin: 1.34em 0px 0px 0px;
+        }
+
     .fa.fa-arrow-left {
         cursor: pointer;
-        border: 1px solid black;
+        border: 1px solid #D6D9F8;
         padding: 5px;
         border-radius: 100px;
+        position: absolute;
+        left: 10px;
+        color: #D6D9F8;
     }
+
+    input[type="text" i] {
+        border: 0px;
+        background: transparent;
+        width: 70%;
+    }
+
+    input[type="email" i] {
+        border: 0px;
+        background: transparent;
+        width: 70%;
+    }
+
+    input:focus-visible {
+        outline: unset;
+    }
+
+    .form-group {
+        display: flex;
+    }
+
+    .field1 {
+        width: 15%;
+    }
+
+    .field3 {
+        display: flex;
+        justify-content: end;
+        width: 15%;
+        font-size: 12px;
+    }
+
+    .field2 {
+        width: 70%;
+    }
+
+    .form-footer {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-create {
+        background: green;
+        color: #fff;
+        padding: 15px 30px;
+        font-size: 15px;
+        border: 0px;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    .btn-back {
+        background: red;
+        padding: 15px 30px;
+        border-radius: 10px;
+    }
+
+        .btn-back a {
+            color: #fff;
+            text-decoration: unset;
+            font-size: 15px;
+        }
+
+    .table-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 70vh;
+    }
+
 </style>

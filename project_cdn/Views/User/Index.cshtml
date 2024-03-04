@@ -8,7 +8,9 @@
 </head>
 <body>
     <div>
-        <h1>User List Index</h1>
+        <div class="menu-item">
+            <h1>User List Index</h1>
+        </div>
         <div class="search-fields">
             <input type="text" class="form-control input-width" name="username" id="username" placeholder="Search for username" value="" />
             <input type="text" class="form-control input-width" name="email" id="email" placeholder="Search for email" value="" />
@@ -116,8 +118,9 @@
         Swal.fire({
             title: 'Are you sure want to delete this user?',
             icon: 'info',
+            iconColor: '#D6D9F8',
             showCancelButton: true,
-            confirmButtonColor: '#47BE7D',
+            confirmButtonColor: '#D6D9F8',
             confirmButtonText: 'Delete'
         }).then((result) => {
             if (result.isConfirmed) {
@@ -136,8 +139,9 @@
                 Swal.fire({
                     title: response.msg,
                     icon: 'success',
+                    iconColor: '#D6D9F8',
                     showCancelButton: false,
-                    confirmButtonColor: '#47BE7D',
+                    confirmButtonColor: '#D6D9F8',
                     confirmButtonText: 'OK'
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -150,8 +154,15 @@
 </script>
 
 <style>
-    .body-color {
-        background: #FFF !important;
+    body {
+        height: calc(100vh - 16px);
+        background-image: linear-gradient(#F1EFFC, #EAEAF6, #DBDDF6, #D6D9F8 );
+    }
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     #user_tbl {
@@ -164,7 +175,7 @@
 
     .input-width {
         width: 18.4%;
-        background: #F0F0F0;
+        background: #FFF;
         border: 0px;
         padding: 10px;
         border-radius: 10px;
